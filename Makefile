@@ -1,24 +1,30 @@
-.PHONY: run build test clean help
+.PHONY: run build test clean help migrate
 
 # Default target
 help:
 	@echo "Available commands:"
-	@echo "  make run     - Run the application"
-	@echo "  make build   - Build the application"
-	@echo "  make test    - Run tests"
-	@echo "  make clean   - Clean build artifacts"
-	@echo "  make help    - Show this help message"
+	@echo "  make run       - Run the application"
+	@echo "  make build     - Build the application"
+	@echo "  make test      - Run tests"
+	@echo "  make migrate   - Run database migration"
+	@echo "  make clean     - Clean build artifacts"
+	@echo "  make help      - Show this help message"
 
 # Run the application
 run:
 	@echo "🚀 Starting the Go API server..."
-	go run main.go
+	go run main.go database.go
 
 # Build the application
 build:
 	@echo "🔨 Building the application..."
-	go build -o api main.go
+	go build -o api main.go database.go
 	@echo "✅ Build complete! Binary: ./api"
+
+# Run database migration
+migrate:
+	@echo "🗄️  Running database migration..."
+	go run migrate.go database.go
 
 # Run tests
 test:

@@ -1,21 +1,25 @@
-# Dummy Go API
+# Dummy Go API with PostgreSQL
 
-A simple REST API built with Go for managing users. This is a demonstration API with in-memory storage.
+A simple REST API built with Go for managing users. This API uses PostgreSQL database for data persistence and is configured to work with Vercel Postgres/Neon.
 
 ## Features
 
 - ✅ CRUD operations for users
 - ✅ RESTful endpoints
+- ✅ PostgreSQL database integration
+- ✅ Environment variable configuration
 - ✅ JSON responses
 - ✅ CORS support
 - ✅ Error handling
 - ✅ Health check endpoint
+- ✅ Database connection pooling
 
 ## Getting Started
 
 ### Prerequisites
 
 - Go 1.21 or higher
+- PostgreSQL database (Vercel Postgres, Neon, or local PostgreSQL)
 - Git (optional)
 
 ### Installation
@@ -26,17 +30,23 @@ A simple REST API built with Go for managing users. This is a demonstration API 
    cd TestGoProgramme
    ```
 
-3. Install dependencies:
+3. Copy the environment file and configure your database:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` file with your database credentials.
+
+4. Install dependencies:
    ```bash
    go mod tidy
    ```
 
-4. Run the application:
+5. Run the application:
    ```bash
    go run main.go
    ```
 
-The server will start on `http://localhost:8080`
+The server will start on `http://localhost:8080` (or the port specified in `PORT` environment variable)
 
 ## API Endpoints
 
@@ -59,10 +69,42 @@ http://localhost:8080/api/v1
 
 ### Sample Data
 
-The API comes with 3 sample users:
+The API automatically creates a `users` table on startup and populates it with 3 sample users if the table is empty:
 1. John Doe (john@example.com)
 2. Jane Smith (jane@example.com)
 3. Bob Johnson (bob@example.com)
+
+## Database Schema
+
+The `users` table has the following structure:
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+# Database connection (required)
+DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
+
+# Optional: Server port (defaults to 8080)
+PORT=8080
+
+# Additional PostgreSQL variables (for Vercel/Neon)
+POSTGRES_URL=postgresql://username:password@host:port/database?sslmode=require
+POSTGRES_USER=username
+POSTGRES_HOST=host
+POSTGRES_PASSWORD=password
+POSTGRES_DATABASE=database
+```
 
 ## Example Usage
 
@@ -146,16 +188,35 @@ To run the binary:
 ## Features Included
 
 - **Router**: Using Gorilla Mux for routing
+- **Database**: PostgreSQL with connection pooling
+- **Environment Config**: Using godotenv for environment variables
 - **CORS**: Cross-Origin Resource Sharing enabled
 - **JSON**: All responses in JSON format
 - **Error Handling**: Proper HTTP status codes and error messages
-- **Validation**: Basic input validation
+- **Validation**: Input validation for required fields
 - **Middleware**: CORS middleware implementation
-- **In-memory Storage**: Simple data persistence for demo
+- **Auto-Migration**: Automatic table creation on startup
+- **Sample Data**: Automatic insertion of sample data
+
+## Deployment
+
+### Vercel
+
+1. Push your code to GitHub
+2. Connect your GitHub repository to Vercel
+3. Configure environment variables in Vercel dashboard
+4. Deploy!
+
+### Railway/Render
+
+1. Connect your GitHub repository
+2. Set environment variables
+3. Deploy with automatic builds
 
 ## Notes
 
-- This is a demo API with in-memory storage
-- Data will be lost when the server restarts
-- No authentication/authorization implemented
-- Suitable for development and testing purposes
+- Uses PostgreSQL for persistent data storage
+- Automatic database table creation and migration
+- Environment variables for secure credential management
+- Production-ready with proper error handling
+- CORS enabled for frontend integration

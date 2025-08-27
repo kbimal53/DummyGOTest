@@ -5,10 +5,29 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
+
+func TestMain(m *testing.M) {
+	// Load test environment variables
+	godotenv.Load()
+	
+	// Initialize database for tests
+	if err := initDB(); err != nil {
+		panic("Failed to initialize test database: " + err.Error())
+	}
+	
+	// Run tests
+	code := m.Run()
+	
+	// Cleanup
+	closeDB()
+	os.Exit(code)
+}
 
 func TestHealthCheck(t *testing.T) {
 	req, err := http.NewRequest("GET", "/api/v1/health", nil)
@@ -41,9 +60,6 @@ func TestHealthCheck(t *testing.T) {
 }
 
 func TestGetUsers(t *testing.T) {
-	// Initialize test data
-	initializeData()
-
 	req, err := http.NewRequest("GET", "/api/v1/users", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -72,16 +88,13 @@ func TestGetUsers(t *testing.T) {
 		t.Errorf("Expected success to be true, got %v", response.Success)
 	}
 
-	// Check if data is a slice (users array)
+	// Check if data is present
 	if response.Data == nil {
 		t.Error("Expected data to be present")
 	}
 }
 
 func TestCreateUser(t *testing.T) {
-	// Initialize test data
-	initializeData()
-
 	user := User{
 		Name:  "Test User",
 		Email: "test@example.com",
