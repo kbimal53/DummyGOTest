@@ -1,25 +1,38 @@
-.PHONY: run build test clean help migrate
+.PHONY: run build test clean help migrate deploy-prep vercel-dev
 
 # Default target
 help:
 	@echo "Available commands:"
-	@echo "  make run       - Run the application"
-	@echo "  make build     - Build the application"
-	@echo "  make test      - Run tests"
-	@echo "  make migrate   - Run database migration"
-	@echo "  make clean     - Clean build artifacts"
-	@echo "  make help      - Show this help message"
+	@echo "  make run         - Run the traditional server locally"
+	@echo "  make build       - Build the traditional server"
+	@echo "  make test        - Run tests"
+	@echo "  make migrate     - Run database migration"
+	@echo "  make deploy-prep - Prepare for Vercel deployment"
+	@echo "  make vercel-dev  - Run Vercel development server"
+	@echo "  make clean       - Clean build artifacts"
+	@echo "  make help        - Show this help message"
 
-# Run the application
+# Run the traditional server locally
 run:
-	@echo "🚀 Starting the Go API server..."
+	@echo "🚀 Starting the Go API server (traditional)..."
 	go run main.go database.go
 
-# Build the application
+# Build the traditional server
 build:
-	@echo "🔨 Building the application..."
+	@echo "🔨 Building the traditional server..."
 	go build -o api main.go database.go
 	@echo "✅ Build complete! Binary: ./api"
+
+# Prepare for Vercel deployment
+deploy-prep:
+	@echo "🚀 Preparing for Vercel deployment..."
+	./deploy.sh
+
+# Run Vercel development server (requires Vercel CLI)
+vercel-dev:
+	@echo "🔄 Starting Vercel development server..."
+	@which vercel > /dev/null || (echo "❌ Vercel CLI not found. Install with: npm i -g vercel" && exit 1)
+	vercel dev
 
 # Run database migration
 migrate:

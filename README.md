@@ -1,12 +1,13 @@
 # Dummy Go API with PostgreSQL
 
-A simple REST API built with Go for managing users. This API uses PostgreSQL database for data persistence and is configured to work with Vercel Postgres/Neon.
+A simple REST API built with Go for managing users. This API uses PostgreSQL database for data persistence and is configured to work with Vercel Postgres/Neon. **Now supports both traditional server deployment and Vercel serverless functions!**
 
 ## Features
 
 - ✅ CRUD operations for users
 - ✅ RESTful endpoints
 - ✅ PostgreSQL database integration
+- ✅ **Vercel serverless function compatible**
 - ✅ Environment variable configuration
 - ✅ JSON responses
 - ✅ CORS support
@@ -85,6 +86,27 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
+
+## Project Structure
+
+```
+TestGoProgramme/
+├── api/                    # Vercel serverless functions
+│   ├── index.go           # Main serverless function handler
+│   ├── database.go        # Database connection for serverless
+│   └── go.mod             # Dependencies for serverless function
+├── main.go                # Traditional server (local development)
+├── database.go            # Database connection for traditional server
+├── migrate.go             # Database migration script
+├── main_test.go           # Unit tests
+├── go.mod                 # Main project dependencies
+├── vercel.json            # Vercel configuration
+├── deploy.sh              # Deployment preparation script
+├── .env                   # Environment variables (not in git)
+├── .env.example           # Environment variables template
+├── README.md              # This file
+└── Makefile               # Development commands
 ```
 
 ## Environment Variables
@@ -200,12 +222,52 @@ To run the binary:
 
 ## Deployment
 
-### Vercel
+### Vercel (Serverless) - Recommended
 
-1. Push your code to GitHub
-2. Connect your GitHub repository to Vercel
-3. Configure environment variables in Vercel dashboard
-4. Deploy!
+This project is now optimized for Vercel's serverless architecture!
+
+1. **Prepare for deployment:**
+   ```bash
+   ./deploy.sh
+   ```
+
+2. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Add Vercel serverless support"
+   git push origin main
+   ```
+
+3. **Deploy to Vercel:**
+   - Go to [vercel.com](https://vercel.com) and sign in
+   - Click "New Project" and import your GitHub repository
+   - Set environment variables in Vercel dashboard:
+     - `DATABASE_URL`
+     - `POSTGRES_URL`
+     - `POSTGRES_USER`
+     - `POSTGRES_HOST`
+     - `POSTGRES_PASSWORD`
+     - `POSTGRES_DATABASE`
+   - Deploy!
+
+### Traditional Server Deployment
+
+For traditional server hosting (Railway, Render, VPS):
+
+1. **Build and run:**
+   ```bash
+   go build -o api main.go database.go
+   ./api
+   ```
+
+2. **Using Docker:**
+   ```bash
+   # Build image
+   docker build -t go-api .
+   
+   # Run container
+   docker run -p 8080:8080 --env-file .env go-api
+   ```
 
 ### Railway/Render
 
