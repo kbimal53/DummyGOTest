@@ -1,4 +1,4 @@
-.PHONY: run build test clean help migrate deploy-prep vercel-dev
+.PHONY: run build test clean help migrate deploy-prep vercel-dev deploy
 
 # Default target
 help:
@@ -8,9 +8,15 @@ help:
 	@echo "  make test        - Run tests"
 	@echo "  make migrate     - Run database migration"
 	@echo "  make deploy-prep - Prepare for Vercel deployment"
+	@echo "  make deploy      - Quick deploy to Vercel (commit + push)"
 	@echo "  make vercel-dev  - Run Vercel development server"
 	@echo "  make clean       - Clean build artifacts"
 	@echo "  make help        - Show this help message"
+
+# Quick deploy to Vercel
+deploy:
+	@echo "🚀 Quick deploying to Vercel..."
+	./quick-deploy.sh
 
 # Run the traditional server locally
 run:
