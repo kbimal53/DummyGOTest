@@ -50,5 +50,4 @@ pids
 # Build artifacts
 dist/
 build/
-api
 testgoapi
