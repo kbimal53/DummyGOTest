@@ -48,35 +48,47 @@ func main() {
 	// Create router
 	r := mux.NewRouter()
 
-	// API routes
-	api := r.PathPrefix("/api/v1").Subrouter()
+	// API routes - both /api and /api/v1 for compatibility
+	api := r.PathPrefix("/api").Subrouter()
+	apiv1 := r.PathPrefix("/api/v1").Subrouter()
 	
-	// User endpoints
+	// User endpoints for /api
 	api.HandleFunc("/users", getUsers).Methods("GET")
 	api.HandleFunc("/users/{id}", getUser).Methods("GET")
 	api.HandleFunc("/users", createUser).Methods("POST")
 	api.HandleFunc("/users/{id}", updateUser).Methods("PUT")
 	api.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
-	
-	// Health check endpoint
 	api.HandleFunc("/health", healthCheck).Methods("GET")
+	
+	// User endpoints for /api/v1 (legacy support)
+	apiv1.HandleFunc("/users", getUsers).Methods("GET")
+	apiv1.HandleFunc("/users/{id}", getUser).Methods("GET")
+	apiv1.HandleFunc("/users", createUser).Methods("POST")
+	apiv1.HandleFunc("/users/{id}", updateUser).Methods("PUT")
+	apiv1.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
+	apiv1.HandleFunc("/health", healthCheck).Methods("GET")
 
-	// Root endpoint
-	r.HandleFunc("/", rootHandler).Methods("GET")
+	// Serve frontend static files from ./public/
+	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./public/"))))
 
 	// Add CORS middleware
 	r.Use(corsMiddleware)
 
 	fmt.Println("🚀 Server starting on http://localhost:8080")
-	fmt.Println("�️  Connected to PostgreSQL database")
-	fmt.Println("�📋 Available endpoints:")
-	fmt.Println("  GET    /                    - Root endpoint")
-	fmt.Println("  GET    /api/v1/health       - Health check")
-	fmt.Println("  GET    /api/v1/users        - Get all users")
-	fmt.Println("  GET    /api/v1/users/{id}   - Get user by ID")
-	fmt.Println("  POST   /api/v1/users        - Create new user")
-	fmt.Println("  PUT    /api/v1/users/{id}   - Update user")
-	fmt.Println("  DELETE /api/v1/users/{id}   - Delete user")
+	fmt.Println("💾 Connected to PostgreSQL database")
+	fmt.Println("📋 Available endpoints:")
+	fmt.Println("  GET    /                    - Frontend Dashboard")
+	fmt.Println("  GET    /api/health          - Health check")
+	fmt.Println("  GET    /api/users           - Get all users")
+	fmt.Println("  GET    /api/users/{id}      - Get user by ID")
+	fmt.Println("  POST   /api/users           - Create new user")
+	fmt.Println("  PUT    /api/users/{id}      - Update user")
+	fmt.Println("  DELETE /api/users/{id}      - Delete user")
+	fmt.Println("  GET    /api/v1/*            - Legacy v1 endpoints (same as /api/*)")
+	fmt.Println()
+	fmt.Println("📱 Frontend: http://localhost:8080")
+	fmt.Println("🔗 API Base: http://localhost:8080/api")
+	fmt.Println("💡 Try the interactive dashboard in your browser!")
 
 	port := os.Getenv("PORT")
 	if port == "" {

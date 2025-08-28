@@ -1,29 +1,42 @@
-# Dummy Go API with PostgreSQL
+# Dummy Go API with PostgreSQL & Frontend
 
-A simple REST API built with Go for managing users. This API uses PostgreSQL database for data persistence and is configured to work with Vercel Postgres/Neon. **Now supports both traditional server deployment and Vercel serverless functions!**
+A complete full-stack application with a **Go REST API backend** and a **modern responsive frontend**. This API uses PostgreSQL database for data persistence and includes a beautiful web interface for managing users. **Now supports both traditional server deployment and Vercel serverless functions!**
 
 ## Features
 
-- ✅ CRUD operations for users
-- ✅ RESTful endpoints
-- ✅ PostgreSQL database integration
+- ✅ **Full-stack application** with Go backend + HTML/JS frontend
+- ✅ **Beautiful responsive UI** built with Tailwind CSS and Alpine.js
+- ✅ **CRUD operations** for users with real-time updates
+- ✅ **RESTful API endpoints** with JSON responses
+- ✅ **PostgreSQL database integration** with connection pooling
 - ✅ **Vercel serverless function compatible**
-- ✅ Environment variable configuration
-- ✅ JSON responses
-- ✅ CORS support
-- ✅ Error handling
-- ✅ Health check endpoint
-- ✅ Database connection pooling
+- ✅ **Health monitoring dashboard** with API status
+- ✅ **Environment variable configuration**
+- ✅ **CORS support** for cross-origin requests
+- ✅ **Error handling** with user-friendly notifications
+- ✅ **Mobile-responsive design**
 
 ## Getting Started
 
-### Prerequisites
+### Quick Start - Frontend Dashboard
+🎯 **Visit the live application**: [https://test-go-programme.vercel.app/](https://test-go-programme.vercel.app/)
+
+The web dashboard provides:
+- Real-time API health monitoring
+- Complete user management interface (CRUD operations)
+- Beautiful responsive design
+- Interactive data tables
+- Instant notifications
+
+### Local Development
+
+#### Prerequisites
 
 - Go 1.21 or higher
 - PostgreSQL database (Vercel Postgres, Neon, or local PostgreSQL)
 - Git (optional)
 
-### Installation
+#### Installation
 
 1. Clone or download this project
 2. Navigate to the project directory:
@@ -42,31 +55,57 @@ A simple REST API built with Go for managing users. This API uses PostgreSQL dat
    go mod tidy
    ```
 
-5. Run the application:
+5. Run the full-stack application:
    ```bash
+   make run
+   # OR directly:
    go run main.go
    ```
 
-The server will start on `http://localhost:8080` (or the port specified in `PORT` environment variable)
+The application will start on `http://localhost:8080`:
+- **Frontend Dashboard**: `http://localhost:8080/`
+- **API Base URL**: `http://localhost:8080/api/`
 
 ## API Endpoints
 
-### Base URL
-```
-http://localhost:8080/api/v1
-```
+### Base URLs
+- **Production (Vercel)**: `https://test-go-programme.vercel.app/api`
+- **Local Development**: `http://localhost:8080/api`
 
 ### Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/` | Root endpoint - Welcome message |
-| GET | `/api/v1/health` | Health check |
-| GET | `/api/v1/users` | Get all users |
-| GET | `/api/v1/users/{id}` | Get user by ID |
-| POST | `/api/v1/users` | Create new user |
-| PUT | `/api/v1/users/{id}` | Update user |
-| DELETE | `/api/v1/users/{id}` | Delete user |
+| GET | `/` | Frontend Dashboard |
+| GET | `/api/health` | Health check |
+| GET | `/api/users` | Get all users |
+| GET | `/api/users/{id}` | Get user by ID |
+| POST | `/api/users` | Create new user |
+| PUT | `/api/users/{id}` | Update user |
+| DELETE | `/api/users/{id}` | Delete user |
+
+### Example API Usage
+
+```bash
+# Check API health
+curl https://test-go-programme.vercel.app/api/health
+
+# Get all users
+curl https://test-go-programme.vercel.app/api/users
+
+# Create a user
+curl -X POST https://test-go-programme.vercel.app/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com"}'
+
+# Update a user
+curl -X PUT https://test-go-programme.vercel.app/api/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Smith","email":"johnsmith@example.com"}'
+
+# Delete a user
+curl -X DELETE https://test-go-programme.vercel.app/api/users/1
+```
 
 ### Sample Data
 
@@ -93,10 +132,19 @@ CREATE TABLE users (
 ```
 TestGoProgramme/
 ├── api/                    # Vercel serverless functions
-│   ├── index.go           # Main serverless function handler
-│   ├── database.go        # Database connection for serverless
-│   └── go.mod             # Dependencies for serverless function
+│   └── api.go             # Main serverless function handler
+├── public/                 # Frontend assets
+│   ├── index.html         # Main dashboard page
+│   └── style.css          # Custom CSS styles
 ├── main.go                # Traditional server (local development)
+├── database.go            # Database connection & schema
+├── vercel.json            # Vercel deployment configuration
+├── go.mod                 # Go module dependencies
+├── go.sum                 # Go module checksums
+├── Makefile               # Development automation
+├── .env.example           # Environment variables template
+└── README.md              # Project documentation
+```
 ├── database.go            # Database connection for traditional server
 ├── migrate.go             # Database migration script
 ├── main_test.go           # Unit tests
@@ -108,6 +156,44 @@ TestGoProgramme/
 ├── README.md              # This file
 └── Makefile               # Development commands
 ```
+
+## Frontend Features
+
+### 🎨 Modern Web Dashboard
+The frontend provides a beautiful, responsive user interface built with:
+
+- **Tailwind CSS**: Modern, utility-first styling
+- **Alpine.js**: Lightweight reactive framework
+- **Font Awesome**: Professional iconography
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+
+### 🔧 Interactive Features
+
+1. **Real-time API Health Monitoring**
+   - Live status indicator with color coding
+   - Health endpoint response time tracking
+   - Automatic health checks every 30 seconds
+
+2. **Complete User Management**
+   - View all users in a beautiful data table
+   - Create new users with instant validation
+   - Edit users inline with click-to-edit functionality
+   - Delete users with confirmation dialogs
+   - Real-time updates without page refresh
+
+3. **User Experience**
+   - Loading states for all operations
+   - Success/error notifications
+   - Form validation with helpful error messages
+   - Mobile-optimized responsive layout
+   - Intuitive navigation and interaction patterns
+
+### 📱 UI Components
+- **Dashboard Header**: API status and branding
+- **Stats Cards**: User count and system metrics
+- **Data Table**: Sortable, interactive user listing
+- **Forms**: Create and edit user modals
+- **Notifications**: Toast messages for user feedback
 
 ## Environment Variables
 
